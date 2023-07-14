@@ -51,7 +51,3 @@ function handleClashes(clashes) {
 
   return clashMatches;
 }
-
-export function hello() {
-  return "hello";
-}

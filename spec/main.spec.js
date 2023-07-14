@@ -1,5 +1,4 @@
 import {
-  hello,
   isStorageAvailable,
   handleGetStorage,
   handleSetStorage,
@@ -38,12 +37,6 @@ class LocalStorageMock {
 
 const localStorage = new LocalStorageMock();
 const noLocalStorage = null;
-
-describe("hello", () => {
-  it("says hello", () => {
-    expect(hello()).toEqual("hello");
-  });
-});
 
 describe("isStorageAvailable", () => {
   it("checks if storage is available", () => {
