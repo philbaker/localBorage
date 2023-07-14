@@ -1,0 +1,19 @@
+{
+  "name": "localBorage",
+  "version": "0.0.1",
+  "description": "Enhancements for local storage",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philbaker/localborage"
+  },
+  "author": "Phil Baker",
+  "license": "MIT",
+  "devDependencies": {
+    "jasmine": "^5.0.2"
+  }
+}
