@@ -1,28 +1,4 @@
-class LocalStorageMock {
-  constructor() {
-    this.store = {};
-  }
-
-  clear() {
-    this.store = {};
-  }
-
-  getItem(key) {
-    return this.store[key] || null;
-  }
-
-  setItem(key, value) {
-    this.store[key] = String(value);
-  }
-
-  removeItem(key) {
-    delete this.store[key];
-  }
-}
-
-var localStorage = new LocalStorageMock();
-
-function isStorageAvailable(store = localStorage) {
+export function isStorageAvailable(store = localStorage) {
   const test = "isstorageavailabletest";
 
   try {
@@ -34,49 +10,46 @@ function isStorageAvailable(store = localStorage) {
   }
 }
 
-function handleGetStorage({ name, store = localStorage, json = true }) {
-  if (!store.getItem(name)) {
+export function handleGetStorage({ key, json = false, store = localStorage }) {
+  if (!store.getItem(key)) {
     return;
   }
 
   if (json) {
-    return JSON.parse(store.getItem(name));
+    return JSON.parse(store.getItem(key));
   }
 
-  store.getItem(name);
+  return store.getItem(key);
 }
 
-function handleSetStorage({
-  name,
+export function handleSetStorage({
+  key,
   value,
-  clashes = null,
-  json = true,
+  json = false,
   store = localStorage,
 }) {
   if (!isStorageAvailable(store)) {
     return;
   }
 
-  if (clashes) {
-    let clashMatches = clashes.some((clash) => {
-      return handleGetStorage({ name: clash, store });
-    });
-
-    if (clashMatches) {
-      return;
-    }
-  }
-
   if (json) {
-    store.setItem(name, JSON.stringify(value));
+    store.setItem(key, JSON.stringify(value));
     return;
   }
 
-  store.setItem(name, value);
+  store.setItem(key, value);
 }
 
-function handleRemoveStorage({ name, store = localStorage }) {
-  store.removeItem(name);
+function handleRemoveStorage({ key, store = localStorage }) {
+  store.removeItem(key);
+}
+
+function handleClashes(clashes) {
+  let clashMatches = clashes.some((clash) => {
+    return handleGetStorage({ key: clash, store });
+  });
+
+  return clashMatches;
 }
 
 export function hello() {
