@@ -1,4 +1,17 @@
-import { storageAvailable, getStorage, setStorage } from "../main.js";
+import {
+  storageAvailable,
+  getStorage,
+  setStorage,
+  removeStorage,
+  getClashes,
+} from "../main.js";
+
+// Tests
+// - [x] storageAvailable
+// - [x] getStorage
+// - [x] setStorage
+// - [x] removeStorage
+// - [ ] getClashes
 
 // Features
 // - [x] Check to see if storage can be set before proceeding
@@ -100,5 +113,79 @@ describe("getStorage", () => {
     expect(
       getStorage({ key: "count", json: true, store: localStorage })
     ).toEqual(5);
+  });
+});
+
+describe("setStorage", () => {
+  beforeAll(() => {
+    setStorage({
+      key: "promoActive",
+      value: true,
+      store: localStorage,
+    });
+
+    setStorage({
+      key: "promoActive2",
+      json: true,
+      value: true,
+      store: localStorage,
+    });
+  });
+
+  it("returns undefined if storage item is not found", () => {
+    expect(getStorage({ key: "test", store: localStorage })).toEqual(undefined);
+  });
+
+  it("gets the string value for a storage item", () => {
+    expect(getStorage({ key: "promoActive", store: localStorage })).toEqual(
+      "true"
+    );
+  });
+
+  it("gets the correct value type if json is true", () => {
+    expect(
+      getStorage({ key: "promoActive2", json: true, store: localStorage })
+    ).toEqual(true);
+  });
+});
+
+describe("setStorage", () => {
+  beforeAll(() => {
+    setStorage({
+      key: "promoActive",
+      value: true,
+      store: localStorage,
+    });
+  });
+
+  it("removes an item from storage if key exists", () => {
+    removeStorage({ key: "promoActive", store: localStorage });
+
+    expect(getStorage({ key: "promoActive", store: localStorage })).toEqual(
+      undefined
+    );
+  });
+});
+
+describe("getClashes", () => {
+  beforeAll(() => {
+    setStorage({
+      key: "promoActive",
+      value: true,
+      store: localStorage,
+    });
+
+    setStorage({
+      key: "colorOptions",
+      value: ["red", "green", "blue"],
+      json: true,
+      store: localStorage,
+    });
+  });
+
+  it("finds specified clashes", () => {
+    expect(getClashes(["promoActive", "colorOptions"], localStorage)).toEqual(
+      true
+    );
   });
 });

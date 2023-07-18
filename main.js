@@ -103,7 +103,7 @@ export function setStorage({ key, value, json = false, store = localStorage }) {
  * // => undefined
  *
  **/
-function removeStorage({ key, store = localStorage }) {
+export function removeStorage({ key, store = localStorage }) {
   store.removeItem(key);
 }
 
@@ -121,7 +121,7 @@ function removeStorage({ key, store = localStorage }) {
  * // => true
  *
  **/
-function getClashes(clashes, store = localStorage) {
+export function getClashes(clashes, store = localStorage) {
   let clashMatches = clashes.some((clash) => {
     return getStorage({ key: clash, store });
   });
