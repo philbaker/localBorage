@@ -1,8 +1,4 @@
-import {
-  isStorageAvailable,
-  handleGetStorage,
-  handleSetStorage,
-} from "../main.js";
+import { storageAvailable, getStorage, setStorage } from "../main.js";
 
 // Features
 // - [x] Check to see if storage can be set before proceeding
@@ -38,37 +34,37 @@ class LocalStorageMock {
 const localStorage = new LocalStorageMock();
 const noLocalStorage = null;
 
-describe("isStorageAvailable", () => {
+describe("storageAvailable", () => {
   it("checks if storage is available", () => {
-    expect(isStorageAvailable(localStorage)).toEqual(true);
+    expect(storageAvailable(localStorage)).toEqual(true);
 
-    expect(isStorageAvailable(noLocalStorage)).toEqual(false);
+    expect(storageAvailable(noLocalStorage)).toEqual(false);
   });
 });
 
-describe("handleGetStorage", () => {
+describe("getStorage", () => {
   beforeAll(() => {
-    handleSetStorage({
+    setStorage({
       key: "promoActive",
       value: true,
       store: localStorage,
     });
 
-    handleSetStorage({
+    setStorage({
       key: "darkMode",
       value: true,
       json: true,
       store: localStorage,
     });
 
-    handleSetStorage({
+    setStorage({
       key: "colorOptions",
       value: ["red", "green", "blue"],
       json: true,
       store: localStorage,
     });
 
-    handleSetStorage({
+    setStorage({
       key: "count",
       value: 5,
       json: true,
@@ -77,32 +73,32 @@ describe("handleGetStorage", () => {
   });
 
   it("returns undefined if key is not found", () => {
-    expect(handleGetStorage({ key: "notSet", store: localStorage })).toEqual(
+    expect(getStorage({ key: "notSet", store: localStorage })).toEqual(
       undefined
     );
   });
 
   it("returns a string value when json is disabled", () => {
-    expect(
-      handleGetStorage({ key: "promoActive", store: localStorage })
-    ).toEqual("true");
+    expect(getStorage({ key: "promoActive", store: localStorage })).toEqual(
+      "true"
+    );
   });
 
   it("returns a boolean value when json is enabled", () => {
     expect(
-      handleGetStorage({ key: "darkMode", json: true, store: localStorage })
+      getStorage({ key: "darkMode", json: true, store: localStorage })
     ).toEqual(true);
   });
 
   it("returns an array value when json is enabled", () => {
     expect(
-      handleGetStorage({ key: "colorOptions", json: true, store: localStorage })
+      getStorage({ key: "colorOptions", json: true, store: localStorage })
     ).toEqual(["red", "green", "blue"]);
   });
 
   it("returns a number value when json is enabled", () => {
     expect(
-      handleGetStorage({ key: "count", json: true, store: localStorage })
+      getStorage({ key: "count", json: true, store: localStorage })
     ).toEqual(5);
   });
 });
