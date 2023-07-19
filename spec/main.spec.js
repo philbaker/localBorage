@@ -3,14 +3,12 @@ import {
   getStorageItem,
   setStorageItem,
   removeStorageItem,
-  storageClashes,
 } from "../main.js";
 
 // Tests
 // - [x] storageAvailable
 // - [x] getStorageItem
 // - [x] removeStorageItem
-// - [x] storageClashes
 // - [ ] setStorageItem
 // - [ ] setStorageItemWithExpiry
 // - [ ] getStorageItemWithExpiry
@@ -20,8 +18,6 @@ import {
 // - [x] Check to see if storage can be set before proceeding
 // - [x] Swappable storage methods (localStorage, sessionStorage)
 // - [x] Create, read, update and delete
-// - [x] Clash detection (set a flag if another value is present - e.g. stop two
-// modals appearing at same time)
 // - [x] Storage expiration
 
 // Local storage mock
@@ -134,40 +130,5 @@ describe("removeStorageItem", () => {
     expect(getStorageItem({ key: "promoActive", store: localStorage })).toEqual(
       undefined
     );
-  });
-});
-
-describe("storageClashes", () => {
-  beforeAll(() => {
-    setStorageItem({
-      key: "promoActive",
-      value: true,
-      store: localStorage,
-    });
-
-    setStorageItem({
-      key: "colorOptions",
-      value: ["red", "green", "blue"],
-      json: true,
-      store: localStorage,
-    });
-  });
-
-  it("finds specified clashes", () => {
-    expect(
-      storageClashes({
-        keys: ["promoActive", "colorOptions"],
-        store: localStorage,
-      })
-    ).toEqual(true);
-  });
-
-  it("finds no clashes", () => {
-    expect(
-      storageClashes({
-        keys: ["newKey", "newKey2"],
-        store: localStorage,
-      })
-    ).toEqual(false);
   });
 });

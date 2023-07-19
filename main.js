@@ -198,22 +198,3 @@ export function setStorageItemWithExpiry({
 export function removeStorageItem({ key, store = localStorage }) {
   store.removeItem(key);
 }
-
-/**
- *
- * Checks for storage clashes
- *
- * @func
- * @param {Object} options
- * @param {Array} options.keys
- * @param {Object=} options.store storage method
- * @return {boolean}
- * @example
- *
- * storageClashes(["darkMode", "colorOptions"]);
- * // => true
- *
- **/
-export function storageClashes({ keys, store = localStorage }) {
-  return keys.some((key) => getStorageItem({ key: key, store }));
-}
