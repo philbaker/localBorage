@@ -1,26 +1,12 @@
 import {
   storageAvailable,
   getStorageItem,
+  getStorageItemWithExpiry,
   setStorageItem,
+  setStorageItemWithExpiry,
   removeStorageItem,
 } from "../main.js";
 
-// Tests
-// - [x] storageAvailable
-// - [x] getStorageItem
-// - [x] removeStorageItem
-// - [ ] setStorageItem
-// - [ ] setStorageItemWithExpiry
-// - [ ] getStorageItemWithExpiry
-//    - Note: pass in now and expiry in order to test
-
-// Features
-// - [x] Check to see if storage can be set before proceeding
-// - [x] Swappable storage methods (localStorage, sessionStorage)
-// - [x] Create, read, update and delete
-// - [x] Storage expiration
-
-// Local storage mock
 class LocalStorageMock {
   constructor() {
     this.store = {};
@@ -112,6 +98,80 @@ describe("getStorageItem", () => {
     expect(
       getStorageItem({ key: "count", json: true, store: localStorage })
     ).toEqual(5);
+  });
+});
+
+describe("setStorageItem", () => {
+  beforeAll(() => {
+    setStorageItem({
+      key: "promoActive",
+      value: true,
+      store: localStorage,
+    });
+  });
+
+  it("it can set storage", () => {
+    expect(
+      getStorageItem({ key: "promoInactive", store: localStorage })
+    ).toEqual(undefined);
+
+    expect(getStorageItem({ key: "promoActive", store: localStorage })).toEqual(
+      "true"
+    );
+  });
+});
+
+describe("setStorageItemWithExpiry", () => {
+  beforeAll(() => {
+    setStorageItemWithExpiry({
+      key: "colorOptionsExpiry",
+      value: ["red", "green", "blue"],
+      now: new Date("2020-11-09T01:00:00"),
+      expiry: new Date("2020-11-10T01:00:00"),
+      store: localStorage,
+    });
+  });
+
+  it("it can set a storage item with an expiry date", () => {
+    expect(
+      getStorageItemWithExpiry({
+        key: "colorOptionsExpiry",
+        now: new Date("2020-11-09T01:00:00"),
+        store: localStorage,
+      })
+    ).toEqual(["red", "green", "blue"]);
+  });
+});
+
+describe("getStorageItemWithExpiry", () => {
+  beforeAll(() => {
+    setStorageItemWithExpiry({
+      key: "colorOptionsExpiry",
+      value: ["red", "green", "blue"],
+      now: new Date("2020-11-09T01:00:00"),
+      expiry: new Date("2020-11-10T01:00:00"),
+      store: localStorage,
+    });
+  });
+
+  it("it returns the item value if date has not expired", () => {
+    expect(
+      getStorageItemWithExpiry({
+        key: "colorOptionsExpiry",
+        now: new Date("2020-11-09T01:00:00"),
+        store: localStorage,
+      })
+    ).toEqual(["red", "green", "blue"]);
+  });
+
+  it("it removes the item if date has expired", () => {
+    expect(
+      getStorageItemWithExpiry({
+        key: "colorOptionsExpiry",
+        now: new Date("2020-11-15T01:00:00"),
+        store: localStorage,
+      })
+    ).toEqual(undefined);
   });
 });
 
