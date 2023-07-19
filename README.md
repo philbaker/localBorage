@@ -1,6 +1,6 @@
 # localBorage
 
-A wrapper for the web storage API that adds some enhancements:
+A wrapper for the web storage API with some enhancements:
 
 - Check if storage can be written to
 - Work with non-string values
