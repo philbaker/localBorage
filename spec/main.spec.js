@@ -9,9 +9,9 @@ import {
 // Tests
 // - [x] storageAvailable
 // - [x] getStorageItem
-// - [x] setStorageItem
 // - [x] removeStorageItem
 // - [x] storageClashes
+// - [ ] setStorageItem
 // - [ ] setStorageItemWithExpiry
 // - [ ] getStorageItemWithExpiry
 //    - Note: pass in now and expiry in order to test
@@ -119,42 +119,7 @@ describe("getStorageItem", () => {
   });
 });
 
-describe("setStorageItem", () => {
-  beforeAll(() => {
-    setStorageItem({
-      key: "promoActive",
-      value: true,
-      store: localStorage,
-    });
-
-    setStorageItem({
-      key: "promoActive2",
-      json: true,
-      value: true,
-      store: localStorage,
-    });
-  });
-
-  it("returns undefined if storage item is not found", () => {
-    expect(getStorageItem({ key: "test", store: localStorage })).toEqual(
-      undefined
-    );
-  });
-
-  it("gets the string value for a storage item", () => {
-    expect(getStorageItem({ key: "promoActive", store: localStorage })).toEqual(
-      "true"
-    );
-  });
-
-  it("gets the correct value type if json is true", () => {
-    expect(
-      getStorageItem({ key: "promoActive2", json: true, store: localStorage })
-    ).toEqual(true);
-  });
-});
-
-describe("setStorageItem", () => {
+describe("removeStorageItem", () => {
   beforeAll(() => {
     setStorageItem({
       key: "promoActive",
@@ -195,5 +160,14 @@ describe("storageClashes", () => {
         store: localStorage,
       })
     ).toEqual(true);
+  });
+
+  it("finds no clashes", () => {
+    expect(
+      storageClashes({
+        keys: ["newKey", "newKey2"],
+        store: localStorage,
+      })
+    ).toEqual(false);
   });
 });

@@ -74,7 +74,7 @@ export function getStorageItem({ key, json = false, store = localStorage }) {
  * });
  *
  **/
-function getStorageItemWithExpiry({
+export function getStorageItemWithExpiry({
   key,
   now = new Date(),
   store = localStorage,
@@ -157,7 +157,7 @@ export function setStorageItem({
  * // => undefined
  *
  **/
-function setStorageItemWithExpiry({
+export function setStorageItemWithExpiry({
   key,
   value,
   now = new Date(),
