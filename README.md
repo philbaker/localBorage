@@ -1,6 +1,6 @@
 # localBorage
 
-A thin wrapper around the browser storage APIs to add some enhancements:
+A wrapper around the browser storage APIs to add some enhancements:
 
 - Check if storage can be written to
 - Work with non-string values
