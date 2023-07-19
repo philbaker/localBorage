@@ -1,25 +1,28 @@
 import {
   storageAvailable,
-  getStorage,
-  setStorage,
-  removeStorage,
-  getClashes,
+  getStorageItem,
+  setStorageItem,
+  removeStorageItem,
+  storageClashes,
 } from "../main.js";
 
 // Tests
 // - [x] storageAvailable
-// - [x] getStorage
-// - [x] setStorage
-// - [x] removeStorage
-// - [ ] getClashes
+// - [x] getStorageItem
+// - [x] setStorageItem
+// - [x] removeStorageItem
+// - [x] storageClashes
+// - [ ] setStorageItemWithExpiry
+// - [ ] getStorageItemWithExpiry
+//    - Note: pass in now and expiry in order to test
 
 // Features
 // - [x] Check to see if storage can be set before proceeding
 // - [x] Swappable storage methods (localStorage, sessionStorage)
-// - [ ] Create, read, update and delete
-// - [ ] Clash detection (set a flag if another value is present - e.g. stop two
+// - [x] Create, read, update and delete
+// - [x] Clash detection (set a flag if another value is present - e.g. stop two
 // modals appearing at same time)
-// - [ ] Storage expiration
+// - [x] Storage expiration
 
 // Local storage mock
 class LocalStorageMock {
@@ -49,35 +52,35 @@ const noLocalStorage = null;
 
 describe("storageAvailable", () => {
   it("checks if storage is available", () => {
-    expect(storageAvailable(localStorage)).toEqual(true);
+    expect(storageAvailable({ store: localStorage })).toEqual(true);
 
-    expect(storageAvailable(noLocalStorage)).toEqual(false);
+    expect(storageAvailable({ store: noLocalStorage })).toEqual(false);
   });
 });
 
-describe("getStorage", () => {
+describe("getStorageItem", () => {
   beforeAll(() => {
-    setStorage({
+    setStorageItem({
       key: "promoActive",
       value: true,
       store: localStorage,
     });
 
-    setStorage({
+    setStorageItem({
       key: "darkMode",
       value: true,
       json: true,
       store: localStorage,
     });
 
-    setStorage({
+    setStorageItem({
       key: "colorOptions",
       value: ["red", "green", "blue"],
       json: true,
       store: localStorage,
     });
 
-    setStorage({
+    setStorageItem({
       key: "count",
       value: 5,
       json: true,
@@ -86,45 +89,45 @@ describe("getStorage", () => {
   });
 
   it("returns undefined if key is not found", () => {
-    expect(getStorage({ key: "notSet", store: localStorage })).toEqual(
+    expect(getStorageItem({ key: "notSet", store: localStorage })).toEqual(
       undefined
     );
   });
 
   it("returns a string value when json is disabled", () => {
-    expect(getStorage({ key: "promoActive", store: localStorage })).toEqual(
+    expect(getStorageItem({ key: "promoActive", store: localStorage })).toEqual(
       "true"
     );
   });
 
   it("returns a boolean value when json is enabled", () => {
     expect(
-      getStorage({ key: "darkMode", json: true, store: localStorage })
+      getStorageItem({ key: "darkMode", json: true, store: localStorage })
     ).toEqual(true);
   });
 
   it("returns an array value when json is enabled", () => {
     expect(
-      getStorage({ key: "colorOptions", json: true, store: localStorage })
+      getStorageItem({ key: "colorOptions", json: true, store: localStorage })
     ).toEqual(["red", "green", "blue"]);
   });
 
   it("returns a number value when json is enabled", () => {
     expect(
-      getStorage({ key: "count", json: true, store: localStorage })
+      getStorageItem({ key: "count", json: true, store: localStorage })
     ).toEqual(5);
   });
 });
 
-describe("setStorage", () => {
+describe("setStorageItem", () => {
   beforeAll(() => {
-    setStorage({
+    setStorageItem({
       key: "promoActive",
       value: true,
       store: localStorage,
     });
 
-    setStorage({
+    setStorageItem({
       key: "promoActive2",
       json: true,
       value: true,
@@ -133,25 +136,27 @@ describe("setStorage", () => {
   });
 
   it("returns undefined if storage item is not found", () => {
-    expect(getStorage({ key: "test", store: localStorage })).toEqual(undefined);
+    expect(getStorageItem({ key: "test", store: localStorage })).toEqual(
+      undefined
+    );
   });
 
   it("gets the string value for a storage item", () => {
-    expect(getStorage({ key: "promoActive", store: localStorage })).toEqual(
+    expect(getStorageItem({ key: "promoActive", store: localStorage })).toEqual(
       "true"
     );
   });
 
   it("gets the correct value type if json is true", () => {
     expect(
-      getStorage({ key: "promoActive2", json: true, store: localStorage })
+      getStorageItem({ key: "promoActive2", json: true, store: localStorage })
     ).toEqual(true);
   });
 });
 
-describe("setStorage", () => {
+describe("setStorageItem", () => {
   beforeAll(() => {
-    setStorage({
+    setStorageItem({
       key: "promoActive",
       value: true,
       store: localStorage,
@@ -159,23 +164,23 @@ describe("setStorage", () => {
   });
 
   it("removes an item from storage if key exists", () => {
-    removeStorage({ key: "promoActive", store: localStorage });
+    removeStorageItem({ key: "promoActive", store: localStorage });
 
-    expect(getStorage({ key: "promoActive", store: localStorage })).toEqual(
+    expect(getStorageItem({ key: "promoActive", store: localStorage })).toEqual(
       undefined
     );
   });
 });
 
-describe("getClashes", () => {
+describe("storageClashes", () => {
   beforeAll(() => {
-    setStorage({
+    setStorageItem({
       key: "promoActive",
       value: true,
       store: localStorage,
     });
 
-    setStorage({
+    setStorageItem({
       key: "colorOptions",
       value: ["red", "green", "blue"],
       json: true,
@@ -184,8 +189,11 @@ describe("getClashes", () => {
   });
 
   it("finds specified clashes", () => {
-    expect(getClashes(["promoActive", "colorOptions"], localStorage)).toEqual(
-      true
-    );
+    expect(
+      storageClashes({
+        keys: ["promoActive", "colorOptions"],
+        store: localStorage,
+      })
+    ).toEqual(true);
   });
 });

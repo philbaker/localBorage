@@ -5,7 +5,8 @@
  * Checks if storage can be written to
  *
  * @func
- * @param {Object=} store storage method
+ * @param {Object} options
+ * @param {Object=} options.store storage method
  * @return {boolean}
  * @example
  *
@@ -13,7 +14,7 @@
  * // => true
  *
  **/
-export function storageAvailable(store = localStorage) {
+export function storageAvailable({ store = localStorage }) {
   const test = "storagetest";
 
   try {
@@ -37,11 +38,11 @@ export function storageAvailable(store = localStorage) {
  * @return {undefined|*}
  * @example
  *
- * getStorage({ key: "colorOptions", json: true, store: localStorage })
+ * getStorageItem({ key: "colorOptions", json: true, store: localStorage })
  * // => ["red", "green", "blue"];
  *
  **/
-export function getStorage({ key, json = false, store = localStorage }) {
+export function getStorageItem({ key, json = false, store = localStorage }) {
   if (!store.getItem(key)) {
     return;
   }
@@ -55,18 +56,57 @@ export function getStorage({ key, json = false, store = localStorage }) {
 
 /**
  *
+ * Gets an item by key from storage if it has not expired
+ * If the item has expired, delete from storage
+ *
+ * @func
+ * @param {Object} options
+ * @param {String} options.key name of storage item
+ * @param {Date=} options.now the current time
+ * @param {Object=} options.store storage method
+ * @return {undefined|*}
+ * @example
+ *
+ * getStorageItemWithExpiry({
+ *   key: "colorOptionsExpiry",
+ *   now: new Date(),
+ *   store: localStorage,
+ * });
+ *
+ **/
+function getStorageItemWithExpiry({
+  key,
+  now = new Date(),
+  store = localStorage,
+}) {
+  const item = getStorageItem({ key, json: true, store });
+
+  if (!item) {
+    return;
+  }
+
+  if (now.getTime() > new Date(item.expiry).getTime()) {
+    removeStorageItem({ key });
+    return;
+  }
+
+  return item.value;
+}
+
+/**
+ *
  * Sets an item in storage with key as name and value as value
  *
  * @func
  * @param {Object} options
  * @param {String} options.key name of storage item
- * @param {String} options.value value of storage item
+ * @param {*} options.value value of storage item
  * @param {boolean=} options.json value should be written as JSON
  * @param {Object=} options.store storage method
  * @return {undefined}
  * @example
  *
- * setStorage({
+ * setStorageItem({
  *   key: "colorOptions",
  *   value: ["red", "green", "blue"],
  *   json: true,
@@ -75,8 +115,13 @@ export function getStorage({ key, json = false, store = localStorage }) {
  * // => undefined
  *
  **/
-export function setStorage({ key, value, json = false, store = localStorage }) {
-  if (!storageAvailable(store)) {
+export function setStorageItem({
+  key,
+  value,
+  json = false,
+  store = localStorage,
+}) {
+  if (!storageAvailable({ store: store })) {
     return;
   }
 
@@ -90,6 +135,53 @@ export function setStorage({ key, value, json = false, store = localStorage }) {
 
 /**
  *
+ * Sets an item in storage with key as name and value as value
+ * Also sets an expiry time for item
+ *
+ * @func
+ * @param {Object} options
+ * @param {String} options.key name of storage item
+ * @param {*} options.value value of storage item
+ * @param {Date=} options.now the current time
+ * @param {Date=} options.expiry the expiry time
+ * @param {Object=} options.store storage method
+ * @return {undefined}
+ * @example
+ *
+ * setStorageItemWithExpiry({
+ *   key: "colorOptionsExpiry",
+ *   value: ["red", "green", "blue"],
+ *   expiry: new Date("2024-11-10T01:00:00"),
+ *   store: localStorage,
+ * });
+ * // => undefined
+ *
+ **/
+function setStorageItemWithExpiry({
+  key,
+  value,
+  now = new Date(),
+  expiry,
+  store = localStorage,
+}) {
+  if (!expiry) {
+    return;
+  }
+
+  if (now.getTime() > expiry.getTime()) {
+    return;
+  }
+
+  const valueWithExpiry = {
+    value,
+    expiry,
+  };
+
+  setStorageItem({ key, value: valueWithExpiry, json: true, store });
+}
+
+/**
+ *
  * Removes an item from storage
  *
  * @func
@@ -99,11 +191,11 @@ export function setStorage({ key, value, json = false, store = localStorage }) {
  * @return {undefined}
  * @example
  *
- * removeStorage({key: "test"});
+ * removeStorageItem({key: "test"});
  * // => undefined
  *
  **/
-export function removeStorage({ key, store = localStorage }) {
+export function removeStorageItem({ key, store = localStorage }) {
   store.removeItem(key);
 }
 
@@ -112,19 +204,16 @@ export function removeStorage({ key, store = localStorage }) {
  * Checks for storage clashes
  *
  * @func
- * @param {Array} clashes
- * @param {Object=} store storage method
+ * @param {Object} options
+ * @param {Array} options.keys
+ * @param {Object=} options.store storage method
  * @return {boolean}
  * @example
  *
- * getClashes(["darkMode", "colorOptions"]);
+ * storageClashes(["darkMode", "colorOptions"]);
  * // => true
  *
  **/
-export function getClashes(clashes, store = localStorage) {
-  let clashMatches = clashes.some((clash) => {
-    return getStorage({ key: clash, store });
-  });
-
-  return clashMatches;
+export function storageClashes({ keys, store = localStorage }) {
+  return keys.some((key) => getStorageItem({ key: key, store }));
 }
