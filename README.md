@@ -39,6 +39,6 @@ getStorageItemWithExpiry({
 });
 // => ["red", "green", "blue"];
 
-removeStorageItem({ key: "test" });
+removeStorageItem({ key: "colorOptions" });
 // => undefined
 ```
