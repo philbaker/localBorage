@@ -67,11 +67,11 @@ export function getStorageItem({ key, json = false, store = localStorage }) {
  * @return {undefined|*}
  * @example
  *
- getStorageItemWithExpiry({
-   key: "colorOptionsExpiry",
-   now: new Date(),
-   store: localStorage,
- });
+ *  getStorageItemWithExpiry({
+ *    key: "colorOptionsExpiry",
+ *    now: new Date(),
+ *    store: localStorage,
+ *  });
  *
  **/
 export function getStorageItemWithExpiry({
@@ -148,12 +148,12 @@ export function setStorageItem({
  * @return {undefined}
  * @example
  *
- setStorageItemWithExpiry({
-   key: "colorOptionsExpiry",
-   value: ["red", "green", "blue"],
-   expiry: new Date("2024-11-10T01:00:00"),
-   store: localStorage,
- });
+ * setStorageItemWithExpiry({
+ *   key: "colorOptionsExpiry",
+ *   value: ["red", "green", "blue"],
+ *   expiry: new Date("2024-11-10T01:00:00"),
+ *   store: localStorage,
+ * });
  * // => undefined
  *
  **/

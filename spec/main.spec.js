@@ -163,6 +163,18 @@ describe("getStorageItemWithExpiry", () => {
       })
     ).toEqual(["red", "green", "blue"]);
   });
+});
+
+describe("getStorageItemWithExpiry", () => {
+  beforeAll(() => {
+    setStorageItemWithExpiry({
+      key: "colorOptionsExpiry",
+      value: ["red", "green", "blue"],
+      now: new Date("2020-11-09T01:00:00"),
+      expiry: new Date("2020-11-10T01:00:00"),
+      store: localStorage,
+    });
+  });
 
   it("it removes the item if date has expired", () => {
     expect(
