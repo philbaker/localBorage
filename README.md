@@ -24,6 +24,9 @@ setStorageItem({
 getStorageItem({ key: "colorOptions", json: true, store: localStorage });
 // => ["red", "green", "blue"];
 
+removeStorageItem({ key: "colorOptions" });
+// => undefined
+
 setStorageItemWithExpiry({
   key: "colorOptionsExpiry",
   value: ["red", "green", "blue"],
@@ -34,11 +37,15 @@ setStorageItemWithExpiry({
 
 getStorageItemWithExpiry({
   key: "colorOptionsExpiry",
-  now: new Date(),
+  now: new Date("2024-11-08T01:00:00"),
   store: localStorage,
 });
 // => ["red", "green", "blue"];
 
-removeStorageItem({ key: "colorOptions" });
+getStorageItemWithExpiry({
+  key: "colorOptionsExpiry",
+  now: new Date("2024-11-15:00:00"),
+  store: localStorage,
+});
 // => undefined
 ```
